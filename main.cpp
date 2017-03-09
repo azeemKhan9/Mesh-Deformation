@@ -65,7 +65,7 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	unsigned char *image = SOIL_load_image("texture_42.jpg", &texWidth, &texHeight, 0, SOIL_LOAD_RGBA);
+	unsigned char *image = SOIL_load_image("gingerbread.png", &texWidth, &texHeight, 0, SOIL_LOAD_RGBA);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
@@ -95,7 +95,7 @@ int main()
 		//draw opengl stuff
 		ourShader.Use();
 		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = glm::lookAt(glm::vec3(0,0,4), glm::vec3(0,0,0), glm::vec3(0,7,0));
+		glm::mat4 view = glm::lookAt(glm::vec3(0,0,4), glm::vec3(0,0,0), glm::vec3(0,1,0));
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
 		GLint viewLoc = glGetUniformLocation(ourShader.Program, "view");
