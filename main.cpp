@@ -1,10 +1,5 @@
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include <iostream>
 #include <vector>
-//#include <stdio.h>
-#include <string>
-#include <cstring>
 
 #define GLEW_STATIC
 #include <GL/GLEW.h>
@@ -12,12 +7,11 @@
 
 #include "Shader.h"
 #include "SOIL2/SOIL2.h"
+#include "meshLoader.h"
 
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
-
-bool meshReader(const char * path, std::vector<glm::vec3> & out_vertices);
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 
@@ -60,7 +54,7 @@ int main()
 	Shader ourShader("verShader.txt", "fragShader.txt"); //Build and compile shader program
 
 	std::vector<glm::vec3> vertices;
-	bool res = meshReader("man.obj", vertices); //Read the mesh file and output the data as array of vertices
+	bool res = meshLoader("man.obj", vertices); //Read the mesh file and output the data as array of vertices
 
 	//Load and create texture
 	GLuint texture;
@@ -92,7 +86,7 @@ int main()
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -127,54 +121,5 @@ int main()
 	//Terminate GLFW to clear any resources allocated by it
 	glfwTerminate();
 	return EXIT_SUCCESS;
-}
-
-bool meshReader(const char * path, std::vector<glm::vec3> & out_vertices)
-{
-	printf("Loading obj file %s........\n", path);
-
-	std::vector<unsigned int> vertexIndices;
-	std::vector<glm::vec3> temp_vertices;
-
-	FILE * file = fopen(path, "r");
-	if (file == NULL) {
-		std::cout << "Can't open the file!" << std::endl;
-		return false;
-	}
-
-	while (1) {
-		char lineHeader[128];
-		int res = fscanf(file, "%s", lineHeader);
-		if (res == EOF) {
-			break;
-		}
-		if (strcmp(lineHeader, "v") == 0) {
-			glm::vec3 vertex;
-			fscanf(file, "%f %f %f \n", &vertex.x, &vertex.y, &vertex.z);
-			temp_vertices.push_back(vertex);
-		}
-		else if (strcmp(lineHeader, "f") == 0) {
-			std::string vertex1, vertex2, vertex3;
-			unsigned int vertexIndex[3];
-			int matches = fscanf(file, "%d %d %d \n", &vertexIndex[0], &vertexIndex[1], &vertexIndex[2]);
-			if (matches != 3) {
-				std::cout << "File cannot be read :(" << std::endl;
-				return false;
-			}
-			vertexIndices.push_back(vertexIndex[0]);
-			vertexIndices.push_back(vertexIndex[1]);
-			vertexIndices.push_back(vertexIndex[2]);
-		}
-	}
-
-	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
-		unsigned int vertexIndex = vertexIndices[i];
-		glm::vec3 vertex = temp_vertices[vertexIndex - 1];
-		out_vertices.push_back(vertex);
-	}
-
-	fclose(file);
-	std::cout << "File has been read" << std::endl;
-	return true;
 }
 
